@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 import json
+from joblib import Parallel, delayed
 
 def cinemark_scrape(cinema):
     r = requests.get('http://www.cinemark.com.bo/cines/' + cinema)
@@ -39,17 +40,19 @@ def cinemark_scrape(cinema):
                         'time': performance_time
                     })
         
-        imdb = cinemark_movie_imdb(movie_slug)
-        
         films.append({
             'id': movie_id,
             'movie_slug': movie_slug,
             'movie_url': movie_url,
             'title': title_text,
             'poster_url': poster_url,
-            'performances': performances,
-            'imdb': imdb
+            'performances': performances
         })
+    
+    imdb_results = Parallel(n_jobs = 4)(delayed(cinemark_movie_imdb)(film['movie_slug']) for film in films)
+    
+    for (film, imdb) in zip(films, imdb_results):
+        film['imdb'] = imdb
     
     return films
 
