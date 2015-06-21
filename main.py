@@ -13,15 +13,25 @@ class MainHandler(tornado.web.RequestHandler):
         self.cinemark_scz_data = cinemark_scz_data
     
     def get(self):
+        jsonp = self.get_argument('callback', '')
+        
         response = self.cinemark_scz_data.get()
         
         self.set_header('Content-Type', 'application/json; charset="utf-8"')
+        
+        if jsonp:
+            self.write(jsonp + '(')
+        
         self.write(response)
+        
+        if jsonp:
+            self.write(')')
 
 def cinemark_scz_data():
     def cinemark_scrape_scz():
         data = cinemark_scrape('ventura-mall-santa-cruz')
-        return json.dumps(data, indent = 2, ensure_ascii = False).encode('utf8')
+        result = { 'movies': data }
+        return json.dumps(result, indent = 2, ensure_ascii = False).encode('utf8')
     
     return LazyTimedCache(cinemark_scrape_scz, timedelta(hours = 1))
 
