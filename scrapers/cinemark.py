@@ -1,7 +1,25 @@
-from bs4 import BeautifulSoup
 import requests
 import json
+import re, locale
+from bs4 import BeautifulSoup
+from datetime import datetime, timedelta
+from pytz import timezone
 from joblib import Parallel, delayed
+
+__bolivia_tz = timezone('America/La_Paz')
+__months_es = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
+
+def parse_date(s):
+    ds, ms = s.split(' ')
+    d = int(ds)
+    m = __months_es.index(ms) + 1
+    y = datetime.now().year
+    return __bolivia_tz.localize(datetime(year = y, month = m, day = d))
+
+def parse_time(s):
+    hs, ms = s.split(':')
+    h, m = int(hs), int(ms)
+    return timedelta(hours = h, minutes = m)
 
 def cinemark_scrape(cinema):
     r = requests.get('http://www.cinemark.com.bo/cines/' + cinema)
@@ -25,7 +43,8 @@ def cinemark_scrape(cinema):
         performances = []
         
         for day_block in movie_block.select('.tabbody'):
-            day_date = day_block.find_previous_sibling('h4').get_text()
+            day_date = day_block.find_previous_sibling('h4').get_text().strip()
+            day_timestamp = parse_date(day_date)
             
             for performance_block in day_block.find_all('div'):
                 performance_type = performance_block.select('h5 > .red')[0].get_text()
@@ -34,10 +53,13 @@ def cinemark_scrape(cinema):
                 performance_times = list(map(lambda x: x.strip(), performance_time_string.split('|')))
                 
                 for performance_time in performance_times:
+                    performance_timestamp = day_timestamp + parse_time(performance_time)
+                    
                     performances.append({
                         'type': performance_type,
                         'date': day_date,
-                        'time': performance_time
+                        'time': performance_time,
+                        'timestamp': performance_timestamp.isoformat()
                     })
         
         films.append({

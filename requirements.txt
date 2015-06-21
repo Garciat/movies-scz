@@ -2,3 +2,4 @@ tornado==4.2
 beautifulsoup4==4.3.2
 requests==2.7.0
 joblib==0.8.4
+pytz==2015.4
