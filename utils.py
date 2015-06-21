@@ -17,6 +17,6 @@ class LazyTimedCache(object):
             return self.eager()
         else:
             delta = datetime.now() - self.timestamp
-            if delta >= ttl:
+            if delta >= self.ttl:
                 return self.eager()
             return self.value
