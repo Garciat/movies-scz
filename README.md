@@ -23,6 +23,7 @@ class Performance {
   type: string;
   date: string;
   time: string;
+  timestamp: string; // ISO 8601
 }
 
 // http://www.omdbapi.com/
