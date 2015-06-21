@@ -15,7 +15,7 @@ def cinemark_scrape(cinema):
         title_href = title_link['href']
         title_text = title_link.get_text()
         
-        movie_url = 'http://www.cinemark.com.bo/' + title_href
+        movie_url = 'http://www.cinemark.com.bo' + title_href
         movie_slug = title_href.split('/')[-1]
         
         poster_img = movie_block.find('img')
