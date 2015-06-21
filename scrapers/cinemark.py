@@ -25,7 +25,7 @@ def cinemark_scrape(cinema):
     r = requests.get('http://www.cinemark.com.bo/cines/' + cinema)
     soup = BeautifulSoup(r.text)
     
-    films = []
+    movies = []
     
     for movie_block in soup.select('.item2'):
         movie_id = movie_block.find_previous_sibling('a')['name']
@@ -62,7 +62,7 @@ def cinemark_scrape(cinema):
                         'timestamp': performance_timestamp.isoformat()
                     })
         
-        films.append({
+        movies.append({
             'id': movie_id,
             'movie_slug': movie_slug,
             'movie_url': movie_url,
@@ -71,12 +71,12 @@ def cinemark_scrape(cinema):
             'performances': performances
         })
     
-    imdb_results = Parallel(n_jobs = 4)(delayed(cinemark_movie_imdb)(film['movie_slug']) for film in films)
+    imdb_results = Parallel(n_jobs = 4)(delayed(cinemark_movie_imdb)(m['movie_slug']) for m in movies)
     
-    for (film, imdb) in zip(films, imdb_results):
-        film['imdb'] = imdb
+    for (movie, imdb) in zip(movies, imdb_results):
+        movie['imdb'] = imdb
     
-    return films
+    return movies
 
 def cinemark_movie_imdb(movie_slug):
     r = requests.get('http://www.cinemark.com.bo/cartelera/' + movie_slug)
