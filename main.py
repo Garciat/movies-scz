@@ -9,21 +9,24 @@ from utils import LazyTimedCache
 from scrapers.cinemark import cinemark_scrape
 
 class MainHandler(tornado.web.RequestHandler):
-    def initialize(self):
-        self.cinemark_data = LazyTimedCache(self.cinemark_scrape, timedelta(hours = 1))
+    def initialize(self, cinemark_scz_data):
+        self.cinemark_scz_data = cinemark_scz_data
     
     def get(self):
-        response = self.cinemark_data.get()
+        response = self.cinemark_scz_data.get()
         
         self.set_header('Content-Type', 'application/json; charset="utf-8"')
         self.write(response)
-    
-    def cinemark_scrape(self):
+
+def cinemark_scz_data():
+    def cinemark_scrape_scz():
         data = cinemark_scrape('ventura-mall-santa-cruz')
         return json.dumps(data, indent = 2, ensure_ascii = False).encode('utf8')
+    
+    return LazyTimedCache(cinemark_scrape_scz, timedelta(hours = 1))
 
 application = tornado.web.Application([
-    (r"/", MainHandler),
+    (r"/", MainHandler, dict(cinemark_scz_data = cinemark_scz_data())),
 ])
 
 if __name__ == "__main__":
