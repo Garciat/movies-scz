@@ -1,5 +1,7 @@
 # movies-scz
 
+Incluir parametro `?callback=XYZ` para activar JSONP.
+
 Formato de resultado en TypeScript por motivos descriptivos:
 
 ```typescript
