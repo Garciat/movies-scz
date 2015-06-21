@@ -67,21 +67,25 @@ Ejemplo
         {
           "date": "21 Jun",
           "type": "DOB",
+          "timestamp": "2015-06-21T20:00:00-04:00",
           "time": "20:00"
         },
         {
           "date": "22 Jun",
           "type": "DOB",
+          "timestamp": "2015-06-22T20:00:00-04:00",
           "time": "20:00"
         },
         {
           "date": "23 Jun",
           "type": "DOB",
+          "timestamp": "2015-06-23T20:00:00-04:00",
           "time": "20:00"
         },
         {
           "date": "24 Jun",
           "type": "DOB",
+          "timestamp": "2015-06-24T19:30:00-04:00",
           "time": "19:30"
         }
       ]
