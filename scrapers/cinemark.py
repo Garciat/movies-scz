@@ -21,6 +21,10 @@ def parse_time(s):
     h, m = int(hs), int(ms)
     return timedelta(hours = h, minutes = m)
 
+def parse_time_list(s):
+    for part in s.split('|'):
+        yield part.strip()
+
 def cinemark_scrape(cinema):
     r = requests.get('http://www.cinemark.com.bo/cines/' + cinema)
     soup = BeautifulSoup(r.text)
@@ -49,8 +53,8 @@ def cinemark_scrape(cinema):
             for performance_block in day_block.find_all('div'):
                 performance_type = performance_block.select('h5 > .red')[0].get_text()
                 
-                performance_time_string = performance_block.find('li').get_text()
-                performance_times = list(map(lambda x: x.strip(), performance_time_string.split('|')))
+                performance_times_string = performance_block.find('li').get_text()
+                performance_times = parse_time_list(performance_times_string)
                 
                 for performance_time in performance_times:
                     performance_timestamp = day_timestamp + parse_time(performance_time)
