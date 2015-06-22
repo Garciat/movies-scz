@@ -9,6 +9,9 @@ class Result {
   movies: Movie[];
 }
 
+/*
+ * Una película en cartelera.
+ */
 class Movie {
   id: string;
   movie_slug: string;
@@ -19,6 +22,9 @@ class Movie {
   performances: Performance[];
 }
 
+/*
+ * Un horario de función de una película en cartelera.
+ */
 class Performance {
   type: string;
   date: string;
@@ -26,7 +32,10 @@ class Performance {
   timestamp: string; // ISO 8601
 }
 
-// http://www.omdbapi.com/
+/*
+ * Información de IMDB de la película.
+ * Ver: http://www.omdbapi.com/
+ */
 class ImdbDescription { ... }
 ```
 
